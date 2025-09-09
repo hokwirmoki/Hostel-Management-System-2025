@@ -5,14 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
     <style>
-        body {
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgb(3, 155, 3);
+            padding: 10px 20px;
+        }
+        nav h1 {
+            color: white;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+        nav ul li {
+            color: white;
+            cursor: pointer;
+        }
+        nav button {
+            background-color: white;
+            color: rgb(3, 155, 3);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        .container {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            height: 85vh;
             margin: 0;
         }
-        .container {
+        .card {
             height: fit-content;
             width: fit-content;
             box-shadow: 5px 10px 18px #888888;
@@ -20,7 +54,7 @@
             border-radius: 10px;
             margin: auto;
         }
-        .container h1 {
+        .card h1 {
             text-align: center;
             color: rgb(3, 155, 3);
         }
@@ -49,7 +83,7 @@
 <body>
     <nav>
         <h1>
-            <img src="#">
+            HBMS
         </h1>
         <ul>
             <li>Home</li>
@@ -60,6 +94,7 @@
         <button>Buy Now</button>
     </nav>
     <div class="container">
+    <div class="card">
         <form action=""> 
             <h1>HBMS</h1>
         <label for="username">Username:</label> <br>
@@ -68,6 +103,7 @@
         <input type="password" name="" id="password"> <br> <br>
         <button id="loginbtn">Login</button>
     </form>
+    </div>
     </div>
     
 </body>
