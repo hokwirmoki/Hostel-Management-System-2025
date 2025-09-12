@@ -31,7 +31,7 @@ nav ul li:hover {
             text-decoration: underline;
         }
 
-main {
+.container {
     display: flex;
     justify-content: center;
     align-items: center;
