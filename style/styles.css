@@ -37,9 +37,3 @@ nav ul li:hover {
     align-items: center;
     height: 100%;
 }
-footer{
-    text-align: center;
-    padding: 10px;
-    background-color: rgb(3, 155, 3);
-    color: white;
-}

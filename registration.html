@@ -19,12 +19,33 @@
         <div class="card">
             <h1>Registration</h1>
             <form action="/register" method="POST">
-                <label for="username">Username:</label><br>
-                <input type="text" id="username" name="username" required><br><br>
-                <label for="email">Email:</label><br>
+                <label for="fullname">Full Name</label> <br>
+                <input type="text" id="fullname" name="fullname" required><br><br>
+
+                <label for="dob">DOB</label> <br>
+                <input type="date" id="dob" name="dob" required><br><br>
+
+                <input type="radio" name="gender" id="male" value="gender"> Male 
+                <input type="radio" name="gender" id="female" value="gender"> Female <br><br> 
+
+                <label for="address">Address</label> <br>
+                <input type="text" id="address" name="address" required><br><br>
+
+                <label for="contact">Contact</label> <br>
+                <input type="text" id="contact" name="contact" required><br><br>
+
+                <label for="email">Email</label><br>
                 <input type="email" id="email" name="email" required><br><br>
-                <label for="password">Password:</label><br>
+
+                <label for="username">Username</label><br>
+                <input type="text" id="username" name="username" required><br><br>
+
+                <label for="password">Password</label><br>
                 <input type="password" id="password" name="password" required><br><br>
+
+                <label for="confirm_password">Confirm Password</label><br>
+                <input type="password" id="confirm_password" name="confirm_password" required> <br><br>
+
                 <input type="submit" value="Register">
             </form>
         </div>
