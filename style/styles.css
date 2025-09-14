@@ -49,12 +49,12 @@ nav ul li:hover {
     margin-bottom: 20px;
     color: rgb(3, 155, 3);
 }
-input[type = "submit"] {
+input[type="submit"]{
     background-color: rgb(3, 155, 3);
     border: none;
-    padding: 10px 15px;
-    width: 100%;
-    border-radius: 10px;
-    color: white;
     font-weight: bold;
+    color: white;
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
 }
