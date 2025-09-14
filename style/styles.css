@@ -43,6 +43,7 @@ nav ul li:hover {
     border-radius: 10px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     padding: 20px;
+    margin-top: auto;
 }
 .card h1 {
     text-align: center;
