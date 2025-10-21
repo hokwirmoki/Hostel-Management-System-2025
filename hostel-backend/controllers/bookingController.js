@@ -90,20 +90,3 @@ exports.getAllBookings = async (req, res) => {
   }
 };
 
-exports.confirmBooking = async (req, res) => {
-  try {
-    const booking = await Booking.findByIdAndUpdate(req.params.id, { status: 'confirmed', paymentStatus: req.body.paymentStatus || 'paid' }, { new: true }).populate('room').populate('user', 'name email');
-    if (!booking) return res.status(404).json({ message: 'Booking not found' });
-
-    transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: booking.user.email,
-      subject: 'Booking Confirmed',
-      text: `Your booking for ${booking.room.title} has been confirmed.`
-    }).catch(err => console.error('Email error', err));
-
-    res.json(booking);
-  } catch (err) {
-    res.status(500).json({ message: 'Server error' });
-  }
-};
