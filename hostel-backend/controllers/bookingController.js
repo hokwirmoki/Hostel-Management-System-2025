@@ -90,3 +90,43 @@ exports.getAllBookings = async (req, res) => {
   }
 };
 
+exports.confirmBooking = async (req, res) => {
+  try {
+    const booking = await Booking.findByIdAndUpdate(req.params.id, { status: 'confirmed', paymentStatus: req.body.paymentStatus || 'paid' }, { new: true }).populate('room').populate('user', 'name email');
+    if (!booking) return res.status(404).json({ message: 'Booking not found' });
+
+    transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: booking.user.email,
+      subject: 'Booking Confirmed',
+      text: `Your booking for ${booking.room.title} has been confirmed.`
+    }).catch(err => console.error('Email error', err));
+
+    res.json(booking);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+exports.cancelBooking = async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id).populate('user', 'email');
+    if (!booking) return res.status(404).json({ message: 'Booking not found' });
+
+    if (req.user.id !== String(booking.user._id) && req.user.role !== 'admin') return res.status(403).json({ message: 'Not allowed' });
+
+    booking.status = 'cancelled';
+    await booking.save();
+
+    transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: booking.user.email,
+      subject: 'Booking Cancelled',
+      text: `Your booking has been cancelled.`
+    }).catch(err => console.error('Email error', err));
+
+    res.json({ message: 'Booking cancelled', booking });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
