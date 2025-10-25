@@ -33,3 +33,13 @@ exports.getRoomById = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+exports.updateRoom = async (req, res) => {
+  try {
+    const room = await Room.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!room) return res.status(404).json({ message: 'Room not found' });
+    res.json(room);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
