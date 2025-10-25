@@ -2,7 +2,7 @@ const Room = require('../models/Room');
 
 exports.createRoom = async (req, res) => {
   try {
-    const { title, roomNumber, pricePerNight, capacity, images = [] } = req.body;
+    const { title, description, roomNumber, pricePerNight, capacity, amenities = [], images = [] } = req.body;
     const exists = await Room.findOne({ roomNumber });
     if (exists) return res.status(400).json({ message: 'Room number already exists' });
 
@@ -39,6 +39,16 @@ exports.updateRoom = async (req, res) => {
     const room = await Room.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!room) return res.status(404).json({ message: 'Room not found' });
     res.json(room);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+exports.deleteRoom = async (req, res) => {
+  try {
+    const room = await Room.findByIdAndDelete(req.params.id);
+    if (!room) return res.status(404).json({ message: 'Room not found' });
+    res.json({ message: 'Room deleted' });
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }
