@@ -33,11 +33,18 @@ app.get('/', (req, res) => res.send('Hostel Booking API is running'));
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(err.statusCode || 500).json({ message: err.message || 'Server error' });
+    console.error(err.stack);
+    res.status(err.statusCode || 500).json({ message: err.message || 'Server error' });
 });
 
-// Start server
+// Start server (bind explicitly to IPv4 to avoid localhost resolution issues on some Windows setups)
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+const HOST = process.env.HOST || '0.0.0.0';
+const server = app.listen(PORT, HOST, () => {
+    console.log(`Server started on ${HOST}:${PORT} (pid=${process.pid})`);
+});
 
+// In case of errors on listen, log them
+server.on('error', (err) => {
+    console.error('Server error:', err);
+});
