@@ -10,3 +10,5 @@ const BookingSchema = new mongoose.Schema({
   paymentStatus: { type: String, enum: ['unpaid', 'paid'], default: 'unpaid' },
   createdAt: { type: Date, default: Date.now }
 });
+
+module.exports = mongoose.model('Booking', BookingSchema);
