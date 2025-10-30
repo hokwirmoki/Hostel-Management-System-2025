@@ -1,13 +1,15 @@
 const express = require('express');
 const router = express.Router();
+const authController = require('../controllers/authController');
+const auth = require('../middleware/auth');
 
-// Minimal auth route stubs to allow server to start.
-router.post('/register', (req, res) => {
-  return res.json({ message: 'register endpoint - stub' });
-});
+// Register a new user
+router.post('/register', authController.register);
 
-router.post('/login', (req, res) => {
-  return res.json({ message: 'login endpoint - stub' });
-});
+// Login and return JWT + user
+router.post('/login', authController.login);
+
+// Get current authenticated user
+router.get('/me', auth, authController.me);
 
 module.exports = router;
