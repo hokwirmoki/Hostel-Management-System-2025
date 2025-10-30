@@ -8,16 +8,19 @@ export default function PrivateRoute({ children, role }) {
 
     // Not logged in: redirect to login and preserve the attempted location
     if (!token) {
-        return <Navigate to = "/login"
-        replace state = {
-            { from: location } }
+        return <Navigate 
+            to="/login" 
+            replace 
+            state={{ from: location }}
         />;
     }
 
     // Logged in but doesn't have required role
-    if (role && user ? .role !== role) {
-        return <Navigate to = "/"
-        replace / > ;
+    if (role && user?.role !== role) {
+        return <Navigate 
+            to="/" 
+            replace
+        />;
     }
 
     // Authorized, render children

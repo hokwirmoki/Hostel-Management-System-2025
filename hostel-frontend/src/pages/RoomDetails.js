@@ -12,6 +12,8 @@ export default function RoomDetails() {
     checkIn: '',
     checkOut: ''
   });
+  const [isBooking, setIsBooking] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     const fetchRoom = async () => {
@@ -37,18 +39,44 @@ export default function RoomDetails() {
       return;
     }
 
+    // Validate dates
+    const checkInDate = new Date(bookingDates.checkIn);
+    const checkOutDate = new Date(bookingDates.checkOut);
+    
+    if (checkInDate >= checkOutDate) {
+      setError('Check-out date must be after check-in date');
+      return;
+    }
+
+    setIsBooking(true);
+    setError(null);
+
     try {
-      await api.post('/bookings', {
+      // Calculate total nights and price
+      const msPerDay = 1000 * 60 * 60 * 24;
+      const nights = Math.ceil((checkOutDate - checkInDate) / msPerDay);
+      const totalPrice = nights * room.price;
+
+      const response = await api.post('/bookings', {
         roomId: id,
         checkIn: bookingDates.checkIn,
-        checkOut: bookingDates.checkOut
+        checkOut: bookingDates.checkOut,
+        totalPrice
       });
+
+      setSuccessMessage('Booking successful! Redirecting to your bookings...');
       
-      navigate('/my-bookings', { 
-        state: { message: 'Booking successful!' }
-      });
+      // Short delay to show success message
+      setTimeout(() => {
+        navigate('/my-bookings', { 
+          state: { message: 'Your room has been successfully booked!' }
+        });
+      }, 1500);
+      
     } catch (err) {
-      setError(err.response?.data?.message || 'Booking failed. Please try again.');
+      const errorMessage = err.response?.data?.message || 'Booking failed. Please try again.';
+      setError(errorMessage);
+      setIsBooking(false);
     }
   };
 
@@ -104,6 +132,12 @@ export default function RoomDetails() {
           <div className="card">
             <div className="card-body">
               <h4 className="card-title">Book This Room</h4>
+              {error && (
+                <div className="alert alert-danger mb-3">{error}</div>
+              )}
+              {successMessage && (
+                <div className="alert alert-success mb-3">{successMessage}</div>
+              )}
               {room.status === 'available' ? (
                 <form onSubmit={handleBooking}>
                   <div className="mb-3">
@@ -116,6 +150,7 @@ export default function RoomDetails() {
                       onChange={(e) => setBookingDates(prev => ({ ...prev, checkIn: e.target.value }))}
                       min={new Date().toISOString().split('T')[0]}
                       required
+                      disabled={isBooking}
                     />
                   </div>
                   <div className="mb-3">
@@ -128,10 +163,34 @@ export default function RoomDetails() {
                       onChange={(e) => setBookingDates(prev => ({ ...prev, checkOut: e.target.value }))}
                       min={bookingDates.checkIn || new Date().toISOString().split('T')[0]}
                       required
+                      disabled={isBooking}
                     />
                   </div>
-                  <button type="submit" className="btn btn-primary w-100">
-                    Book Now - ${room.price}/night
+                  {bookingDates.checkIn && bookingDates.checkOut && (
+                    <div className="mb-3">
+                      <div className="card bg-light">
+                        <div className="card-body">
+                          <h6 className="card-title">Booking Summary</h6>
+                          <p className="mb-1">Check-in: {new Date(bookingDates.checkIn).toLocaleDateString()}</p>
+                          <p className="mb-1">Check-out: {new Date(bookingDates.checkOut).toLocaleDateString()}</p>
+                          <p className="mb-0">Price per night: ${room.price}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  <button 
+                    type="submit" 
+                    className="btn btn-primary w-100"
+                    disabled={isBooking}
+                  >
+                    {isBooking ? (
+                      <>
+                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        Processing Booking...
+                      </>
+                    ) : (
+                      `Book Now - $${room.price}/night`
+                    )}
                   </button>
                 </form>
               ) : (
