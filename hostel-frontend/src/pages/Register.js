@@ -8,8 +8,9 @@ export default function Register() {
         email: '',
         password: '',
         confirmPassword: ''
-    });
-    const [error, setError] = useState('');
+    })
+ 
+ const [error, setError] = useState('');
     const navigate = useNavigate();
     const { register } = useContext(AuthContext);
 
@@ -19,7 +20,6 @@ export default function Register() {
             [e.target.name]: e.target.value
         });
     };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
