@@ -1,5 +1,15 @@
 
+import React, { useState, useContext } from 'react';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 
+export default function Login() {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
+    const location = useLocation();
+    const { login } = useContext(AuthContext);
     const handleSubmit = async(e) => {
         e.preventDefault();
         try {
