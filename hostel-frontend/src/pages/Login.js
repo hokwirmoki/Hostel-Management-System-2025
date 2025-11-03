@@ -29,16 +29,6 @@ export default function Login() {
                 return;
             }
 
-            // Otherwise default based on role
-            if (response.user.role === 'admin') {
-                navigate('/admin', { replace: true });
-            } else {
-                navigate('/', { replace: true });
-            }
-        } catch (err) {
-            setError(err.response?.data?.message || 'Login failed. Please try again.');
-        }
-    };
     return (
         <div className="auth-page">
             <div 
