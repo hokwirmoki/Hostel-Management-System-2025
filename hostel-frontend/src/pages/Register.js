@@ -20,7 +20,8 @@ export default function Register() {
             [e.target.name]: e.target.value
         });
     };
-    const handleSubmit = async (e) => {
+ 
+ const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (formData.password !== formData.confirmPassword) {
