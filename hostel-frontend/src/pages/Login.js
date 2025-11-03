@@ -13,6 +13,9 @@ export default function Login() {
     const handleSubmit = async(e) => {
         e.preventDefault();
         try {
+          const handleSubmit = async(e) => {
+        e.preventDefault();
+        try {
             const response = await login(email, password);
             // If we were redirected to login, go back to the original page
             const from = location.state?.from?.pathname;
