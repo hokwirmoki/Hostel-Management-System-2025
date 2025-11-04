@@ -10,9 +10,9 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routes/auth');
 const roomRoutes = require('./routes/rooms');
 const bookingRoutes = require('./routes/bookings');
-const adminRoutes = require('./routes/adminRoutes'); // ✅ import here
+const adminRoutes = require('./routes/adminRoutes'); //
 
-const app = express(); // ✅ define app before using it
+const app = express();
 
 // Connect to DB
 connectDB();
@@ -26,7 +26,7 @@ app.use(morgan('dev'));
 app.use('/api/auth', authRoutes);
 app.use('/api/rooms', roomRoutes);
 app.use('/api/bookings', bookingRoutes);
-app.use('/api/admin', adminRoutes); // ✅ now this is safe
+app.use('/api/admin', adminRoutes);
 
 // Health check
 app.get('/', (req, res) => res.send('Hostel Booking API is running'));
