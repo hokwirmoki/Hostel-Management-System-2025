@@ -11,7 +11,7 @@ export default function RoomDetails() {
   const [bookingDates, setBookingDates] = useState({
     checkIn: '',
     checkOut: ''
-  });
+ });
   const [isBooking, setIsBooking] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
 
@@ -27,6 +27,7 @@ export default function RoomDetails() {
         console.error('Error fetching room:', err);
       }
     };
+
 
     fetchRoom();
   }, [id]);
