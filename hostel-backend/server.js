@@ -6,45 +6,40 @@ const morgan = require('morgan');
 
 const connectDB = require('./config/db');
 
-// Routes
+// Import routes
 const authRoutes = require('./routes/auth');
 const roomRoutes = require('./routes/rooms');
 const bookingRoutes = require('./routes/bookings');
-const adminRoutes = require('./routes/adminRoutes'); // <--- add admin routes here
+const adminRoutes = require('./routes/adminRoutes'); //
 
 const app = express();
 
-// Connect Database
+// Connect to DB
 connectDB();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(morgan('dev')); // logs incoming requests
+app.use(morgan('dev'));
 
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/rooms', roomRoutes);
 app.use('/api/bookings', bookingRoutes);
-app.use('/api/admin', adminRoutes); // <--- place admin routes here before app.listen
+app.use('/api/admin', adminRoutes);
 
 // Health check
 app.get('/', (req, res) => res.send('Hostel Booking API is running'));
 
-// Error handling middleware
+// Error handler
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(err.statusCode || 500).json({ message: err.message || 'Server error' });
+  console.error(err.stack);
+  res.status(err.statusCode || 500).json({ message: err.message || 'Server error' });
 });
 
-// Start server (bind explicitly to IPv4 to avoid localhost resolution issues on some Windows setups)
+// Start server
 const PORT = process.env.PORT || 5000;
-const HOST = process.env.HOST || '0.0.0.0';
-const server = app.listen(PORT, HOST, () => {
-    console.log(`Server started on ${HOST}:${PORT} (pid=${process.pid})`);
-});
+app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 
-// In case of errors on listen, log them
-server.on('error', (err) => {
-    console.error('Server error:', err);
-});
+const path = require('path');
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

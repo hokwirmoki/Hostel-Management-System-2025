@@ -1,4 +1,3 @@
-
 import React, { useState, useContext } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
@@ -10,13 +9,12 @@ export default function Login() {
     const navigate = useNavigate();
     const location = useLocation();
     const { login } = useContext(AuthContext);
-    const handleSubmit = async(e) => {
-        e.preventDefault();
-        try {
-          const handleSubmit = async(e) => {
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             const response = await login(email, password);
+
             // If we were redirected to login, go back to the original page
             const from = location.state?.from?.pathname;
             if (from) {
@@ -29,12 +27,16 @@ export default function Login() {
                 return;
             }
 
+            // Default: navigate to home page
+            navigate('/', { replace: true });
+        } catch (err) {
+            setError(err.message || 'Failed to log in. Please try again.');
+        }
+    };
+
     return (
         <div className="auth-page">
-            <div 
-                className="auth-overlay"
-                aria-hidden="true"
-            />
+            <div className="auth-overlay" aria-hidden="true" />
             <div className="auth-wrapper container">
                 <div className="row justify-content-center">
                     <div className="col-12 col-sm-10 col-md-8 col-lg-5">
@@ -46,10 +48,7 @@ export default function Login() {
                                 )}
                                 <form onSubmit={handleSubmit}>
                                     <div className="mb-3">
-                                        <label 
-                                            htmlFor="email"
-                                            className="form-label"
-                                        >
+                                        <label htmlFor="email" className="form-label">
                                             Email
                                         </label>
                                         <input
@@ -62,10 +61,7 @@ export default function Login() {
                                         />
                                     </div>
                                     <div className="mb-3">
-                                        <label 
-                                            htmlFor="password"
-                                            className="form-label"
-                                        >
+                                        <label htmlFor="password" className="form-label">
                                             Password
                                         </label>
                                         <input
@@ -77,15 +73,13 @@ export default function Login() {
                                             required
                                         />
                                     </div>
-                                    <button 
-                                        type="submit"
-                                        className="btn btn-primary w-100"
-                                    >
+                                    <button type="submit" className="btn btn-primary w-100">
                                         Login
                                     </button>
                                 </form>
                                 <div className="mt-3 text-center text-muted">
-                                    Don't have an account? <Link to="/register">Register here</Link>
+                                    Don't have an account?{' '}
+                                    <Link to="/register">Register here</Link>
                                 </div>
                             </div>
                         </div>
