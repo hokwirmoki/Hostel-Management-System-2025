@@ -24,19 +24,7 @@ export default function Register() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Basic validation
-        if (formData.password !== formData.confirmPassword) {
-            setError('Passwords do not match.');
-            return;
-        }
-
-        try {
-            await register(formData.name, formData.email, formData.password);
-            navigate('/login'); // Redirect to login after successful registration
-        } catch (err) {
-            setError(err.message || 'Registration failed. Please try again.');
-        }
-    };
+     
 
     return (
         <div className="container mt-5">
