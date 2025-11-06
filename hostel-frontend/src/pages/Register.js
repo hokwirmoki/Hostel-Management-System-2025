@@ -8,9 +8,9 @@ export default function Register() {
         email: '',
         password: '',
         confirmPassword: ''
-    })
- 
- const [error, setError] = useState('');
+    });
+
+    const [error, setError] = useState('');
     const navigate = useNavigate();
     const { register } = useContext(AuthContext);
 
@@ -20,11 +20,23 @@ export default function Register() {
             [e.target.name]: e.target.value
         });
     };
- 
- const handleSubmit = async (e) => {
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-     
+        // Basic validation
+        if (formData.password !== formData.confirmPassword) {
+            setError('Passwords do not match.');
+            return;
+        }
+
+        try {
+            await register(formData.name, formData.email, formData.password);
+            navigate('/login'); // Redirect to login after successful registration
+        } catch (err) {
+            setError(err.message || 'Registration failed. Please try again.');
+        }
+    };
 
     return (
         <div className="container mt-5">
@@ -83,7 +95,9 @@ export default function Register() {
                                         required
                                     />
                                 </div>
-                                <button type="submit" className="btn btn-primary w-100">Register</button>
+                                <button type="submit" className="btn btn-primary w-100">
+                                    Register
+                                </button>
                             </form>
                             <div className="mt-3 text-center">
                                 Already have an account? <Link to="/login">Login here</Link>
