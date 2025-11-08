@@ -7,7 +7,8 @@ export default function RoomsList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
+
+    useEffect(() => {
     const fetchRooms = async () => {
       try {
         console.log('Fetching rooms...');
@@ -21,6 +22,7 @@ export default function RoomsList() {
         setLoading(false);
       }
     };
+
 
     fetchRooms();
   }, []);
