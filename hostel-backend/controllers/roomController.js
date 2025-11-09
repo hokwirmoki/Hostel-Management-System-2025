@@ -65,7 +65,7 @@ exports.updateRoom = async (req, res) => {
   }
 };
 
-// Delete room
+// Delete room(s)
 exports.deleteRoom = async (req, res) => {
   try {
     await Room.findByIdAndDelete(req.params.id);
