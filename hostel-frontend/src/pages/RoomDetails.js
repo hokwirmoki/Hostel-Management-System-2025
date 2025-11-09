@@ -33,9 +33,12 @@ export default function RoomDetails() {
     };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> bb02258437336a2c00bd596ce5e05b59ad5cbaa9
+=======
+>>>>>>> d66dbb4 (enhanced rooom lists)
     fetchRoom();
   }, [id]);
 
