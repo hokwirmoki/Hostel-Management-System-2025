@@ -8,6 +8,6 @@ module.exports = function (requiredRole) {
       return res.status(403).json({ message: "Access denied. Admins only." });
     }
 
-    next(); // continue to the route
+    next(); 
   };
 };
