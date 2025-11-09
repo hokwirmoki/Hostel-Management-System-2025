@@ -19,7 +19,7 @@ router.get("/bookings", auth, isAdmin, getAllBookings);
 router.put("/bookings/:id/approve", auth, isAdmin, approveBooking);
 router.put("/bookings/:id/reject", auth, isAdmin, rejectBooking);
 
-// Admin rooms routes
+// ✅ Admin rooms routes
 router.get("/rooms", auth, isAdmin, getAllRooms);
 
 module.exports = router;
