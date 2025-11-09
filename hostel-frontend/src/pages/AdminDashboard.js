@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 
-export default function AdminDashboard() {
-  const [bookings, setBookings] = useState([]);
-  const [rooms, setRooms] = useState([]);
-
   useEffect(() => {
     api.get('/bookings').then(res => setBookings(res.data)).catch(err => console.error(err));
     api.get('/rooms').then(res => setRooms(res.data)).catch(err => console.error(err));
   }, []);
+
+  const confirmBooking = async (id) => {
+    try {
+      await api.put(`/bookings/${id}/confirm`, { paymentStatus: 'paid' });
+      setBookings(b => b.map(x => x._id === id ? { ...x, status: 'confirmed', paymentStatus: 'paid' } : x));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
 
   const confirmBooking = async (id) => {
     try {
