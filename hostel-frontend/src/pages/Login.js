@@ -34,9 +34,12 @@ export default function Login() {
         }
     };
 
-    return (
-        <div className="auth-page">
-            <div className="auth-overlay" aria-hidden="true" />
+     return (
+<div className="auth-page">
+            <div 
+                className="auth-overlay"
+                aria-hidden="true"
+            />
             <div className="auth-wrapper container">
                 <div className="row justify-content-center">
                     <div className="col-12 col-sm-10 col-md-8 col-lg-5">
@@ -48,7 +51,10 @@ export default function Login() {
                                 )}
                                 <form onSubmit={handleSubmit}>
                                     <div className="mb-3">
-                                        <label htmlFor="email" className="form-label">
+                                        <label 
+                                            htmlFor="email"
+                                            className="form-label"
+                                        >
                                             Email
                                         </label>
                                         <input
@@ -61,7 +67,10 @@ export default function Login() {
                                         />
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="password" className="form-label">
+                                        <label 
+                                            htmlFor="password"
+                                            className="form-label"
+                                        >
                                             Password
                                         </label>
                                         <input
@@ -73,13 +82,15 @@ export default function Login() {
                                             required
                                         />
                                     </div>
-                                    <button type="submit" className="btn btn-primary w-100">
+                                    <button 
+                                        type="submit"
+                                        className="btn btn-primary w-100"
+                                    >
                                         Login
                                     </button>
                                 </form>
                                 <div className="mt-3 text-center text-muted">
-                                    Don't have an account?{' '}
-                                    <Link to="/register">Register here</Link>
+                                    Don't have an account? <Link to="/register">Register here</Link>
                                 </div>
                             </div>
                         </div>
@@ -87,5 +98,6 @@ export default function Login() {
                 </div>
             </div>
         </div>
+        
     );
 }
