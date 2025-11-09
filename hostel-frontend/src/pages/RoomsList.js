@@ -1,109 +1,56 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState, useContext } from 'react';
 import api from '../services/api';
+import { Link } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 
 export default function RoomsList() {
   const [rooms, setRooms] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { user } = useContext(AuthContext);
 
-<<<<<<< HEAD
   useEffect(() => {
-=======
-
-    useEffect(() => {
->>>>>>> bb02258437336a2c00bd596ce5e05b59ad5cbaa9
-    const fetchRooms = async () => {
-      try {
-        console.log('Fetching rooms...');
-        const response = await api.get('/rooms');
-        console.log('Rooms response:', response.data);
-        setRooms(Array.isArray(response.data) ? response.data : []);
-        setLoading(false);
-      } catch (err) {
-        console.error('Error fetching rooms:', err);
-        setError(err?.response?.data?.message || 'Failed to load rooms. Please try again later.');
-        setLoading(false);
-      }
-    };
-
-<<<<<<< HEAD
-=======
-
->>>>>>> bb02258437336a2c00bd596ce5e05b59ad5cbaa9
-    fetchRooms();
+    api.get('/rooms')
+      .then(res => setRooms(res.data))
+      .catch(err => console.error(err));
   }, []);
 
-  if (loading) return (
-    <div className="container mt-4">
-      <div className="alert alert-info">
-        <div className="spinner-border spinner-border-sm me-2" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-        Loading rooms...
-      </div>
-    </div>
-  );
-  
-  if (error) return (
-    <div className="container mt-4">
-      <div className="alert alert-danger">
-        <i className="bi bi-exclamation-triangle me-2"></i>
-        {error}
-        <button 
-          className="btn btn-outline-danger btn-sm ms-3"
-          onClick={() => window.location.reload()}
-        >
-          Try Again
-        </button>
-      </div>
-    </div>
-  );
-
   return (
-    <div className="container mt-4">
-      <h2>Available Rooms</h2>
+    <div className="container">
+      <h2>Hostel Rooms</h2>
       <div className="row">
-        {rooms.map((room) => (
-          <div key={room._id} className="col-md-4 mb-4">
-            <div className="card">
-              {room.image && (
-                <img
-                  src={room.image}
-                  className="card-img-top"
-                  alt={room.title}
-                  style={{ height: '200px', objectFit: 'cover' }}
-                />
-              )}
-              <div className="card-body">
-                <h5 className="card-title">{room.title}</h5>
-                <p className="card-text">
-                  <strong>Room Number:</strong> {room.roomNumber}<br />
-                  <strong>Type:</strong> {room.type}<br />
-                  <strong>Price:</strong> ${room.price}/night<br />
-                  <strong>Status:</strong> {room.status}
-                </p>
-                <button 
-                  className="btn btn-primary"
-                  disabled={room.status === 'occupied'}
-                  onClick={() => {
-                    // TODO: Implement booking functionality
-                    alert('Booking functionality coming soon!');
-                  }}
-                >
-                  {room.status === 'occupied' ? 'Occupied' : 'Book Now'}
-                </button>
+        {rooms.length > 0 ? (
+          rooms.map(r => (
+            <div key={r._id} className="col-md-4">
+              <div className="card mb-3">
+                {r.images && r.images.length > 0 ? (
+                  <img
+                    src={`http://localhost:5000${r.images[0]}`}
+                    alt={r.title}
+                    className="card-img-top"
+
+                  />
+                ) : (
+                  <img
+                    src="https://via.placeholder.com/600x300?text=Hostel+Room"
+                    alt="Default room"
+                    className="card-img-top"
+
+                  />
+                )}
+                <div className="card-body">
+                  <h5>{r.title}</h5>
+                  <p>Room {r.roomNumber} • UGX {r.pricePerSemester?.toLocaleString()} / semester</p>
+                  {r.amenities && r.amenities.length > 0 && (
+                    <p><strong>Amenities:</strong> {r.amenities.join(', ')}</p>
+                  )}
+                  <Link className="btn btn-sm btn-outline-primary" to={`/rooms/${r._id}`}>Details</Link>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p className="text-center mt-3">No rooms available at the moment.</p>
+        )}
       </div>
-      
-      {rooms.length === 0 && (
-        <div className="alert alert-info">
-          No rooms available at the moment.
-        </div>
-      )}
     </div>
   );
 }
