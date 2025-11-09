@@ -1,132 +1,99 @@
 const Booking = require('../models/Booking');
 const Room = require('../models/Room');
-const nodemailer = require('nodemailer');
+const User = require('../models/User');
 
-const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST,
-  port: Number(process.env.EMAIL_PORT || 587),
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  }
-});
-
-// Utility: check date overlap
-async function hasOverlap(roomId, checkInDate, checkOutDate) {
-  return await Booking.findOne({
-    room: roomId,
-    status: { $ne: 'cancelled' },
-    $and: [
-      { checkIn: { $lt: checkOutDate } },
-      { checkOut: { $gt: checkInDate } }
-    ]
-  });
-}
-
+// CREATE BOOKING
 exports.createBooking = async (req, res) => {
   try {
-    const userId = req.user.id;
     const { roomId, checkIn, checkOut } = req.body;
-    if (!roomId || !checkIn || !checkOut) return res.status(400).json({ message: 'Missing filelds' });
+    const userId = req.user.id; 
 
-    const checkInDate = new Date(checkIn);
-    const checkOutDate = new Date(checkOut);
-    if (checkInDate >= checkOutDate) return res.status(400).json({ message: 'checkOut must be after checkIn' });
+    if (!roomId || !checkIn) {
+      return res.status(400).json({ message: 'Room and check-in date are required' });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: 'User not found' });
 
     const room = await Room.findById(roomId);
     if (!room) return res.status(404).json({ message: 'Room not found' });
 
-    const conflict = await hasOverlap(roomId, checkInDate, checkOutDate);
-    if (conflict) return res.status(400).json({ message: 'Room already booked for chosen dates' });
+    const totalPrice = room.pricePerSemester;
 
-    const msPerDay = 1000 * 60 * 60 * 24;
-    const nights = Math.ceil((checkOutDate - checkInDate) / msPerDay);
-    const totalPrice = nights * room.pricePerNight;
+    // Auto-calculate checkOut (4 months from checkIn)
+    const defaultCheckOut =
+      checkOut || new Date(new Date(checkIn).setMonth(new Date(checkIn).getMonth() + 4));
 
     const booking = new Booking({
-      user: userId,
-      room: roomId,
-      checkIn: checkInDate,
-      checkOut: checkOutDate,
+      user: user._id,
+      room: room._id,
+      checkIn,
+      checkOut: defaultCheckOut,
       totalPrice,
-      paymentStatus: 'unpaid'
+      status: 'pending',
+      paymentStatus: 'unpaid',
     });
 
     await booking.save();
 
-    // send email (best-effort; will not crash if fails)
-    const toEmail = req.body.email || 'no-reply@example.com';
-    transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: toEmail,
-      subject: 'Booking Received',
-      text: `Your booking for ${room.title} from ${checkInDate.toDateString()} to ${checkOutDate.toDateString()} is received.`
-    }).catch(err => console.error('Email error', err));
+    // Populate user and room after saving
+    await booking.populate('user', 'name email');
+    await booking.populate('room', 'title roomNumber pricePerSemester images');
 
-    res.json({ booking });
+    res.status(201).json({ message: 'Booking created successfully', booking });
   } catch (err) {
-    console.error(err);
+    console.error('Error creating booking:', err);
     res.status(500).json({ message: 'Server error' });
   }
 };
 
+// GET BOOKINGS FOR LOGGED-IN USER
 exports.getMyBookings = async (req, res) => {
   try {
-    const userId = req.user.id;
-    const bookings = await Booking.find({ user: userId }).populate('room');
-    res.json(bookings);
+    const userId = req.user.id; 
+
+    const bookings = await Booking.find({ user: userId })
+      .populate('room', 'title roomNumber pricePerSemester images')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(bookings);
   } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Error fetching user bookings:', err);
+    res.status(500).json({ message: 'Failed to fetch user bookings' });
   }
 };
 
+// GET ALL BOOKINGS (for admin)
 exports.getAllBookings = async (req, res) => {
   try {
-    const bookings = await Booking.find().populate('room').populate('user', 'name email');
-    res.json(bookings);
+    const bookings = await Booking.find()
+      .populate('user', 'name email')
+      .populate('room', 'title roomNumber pricePerSemester images')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(bookings);
   } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Error fetching bookings:', err);
+    res.status(500).json({ message: 'Failed to fetch bookings' });
   }
 };
 
-exports.confirmBooking = async (req, res) => {
+// UPDATE BOOKING STATUS (admin)
+exports.updateBookingStatus = async (req, res) => {
   try {
-    const booking = await Booking.findByIdAndUpdate(req.params.id, { status: 'confirmed', paymentStatus: req.body.paymentStatus || 'paid' }, { new: true }).populate('room').populate('user', 'name email');
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const booking = await Booking.findByIdAndUpdate(id, { status }, { new: true });
+
     if (!booking) return res.status(404).json({ message: 'Booking not found' });
 
-    transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: booking.user.email,
-      subject: 'Booking Confirmed',
-      text: `Your booking for ${booking.room.title} has been confirmed.`
-    }).catch(err => console.error('Email error', err));
+    await booking.populate('user', 'name email');
+    await booking.populate('room', 'title roomNumber');
 
-    res.json(booking);
+    res.json({ message: 'Booking status updated', booking });
   } catch (err) {
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
-exports.cancelBooking = async (req, res) => {
-  try {
-    const booking = await Booking.findById(req.params.id).populate('user', 'email');
-    if (!booking) return res.status(404).json({ message: 'Booking not found' });
-
-    if (req.user.id !== String(booking.user._id) && req.user.role !== 'admin') return res.status(403).json({ message: 'Not allowed' });
-
-    booking.status = 'cancelled';
-    await booking.save();
-
-    transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: booking.user.email,
-      subject: 'Booking Cancelled',
-      text: `Your booking has been cancelled.`
-    }).catch(err => console.error('Email error', err));
-
-    res.json({ message: 'Booking cancelled', booking });
-  } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Error updating booking:', err);
+    res.status(500).json({ message: 'Failed to update booking' });
   }
 };
