@@ -1,4 +1,3 @@
-// seed.js
 require('dotenv').config();
 const connectDB = require('./config/db');
 const bcrypt = require('bcryptjs');
