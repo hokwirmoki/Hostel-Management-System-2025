@@ -28,7 +28,7 @@ exports.createBooking = async (req, res) => {
   try {
     const userId = req.user.id;
     const { roomId, checkIn, checkOut } = req.body;
-    if (!roomId || !checkIn || !checkOut) return res.status(400).json({ message: 'Missing fields' });
+    if (!roomId || !checkIn || !checkOut) return res.status(400).json({ message: 'Missing filelds' });
 
     const checkInDate = new Date(checkIn);
     const checkOutDate = new Date(checkOut);

@@ -11,7 +11,11 @@ export default function RoomDetails() {
   const [bookingDates, setBookingDates] = useState({
     checkIn: '',
     checkOut: ''
+<<<<<<< HEAD
  });
+=======
+  });
+>>>>>>> bb02258437336a2c00bd596ce5e05b59ad5cbaa9
   const [isBooking, setIsBooking] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
 
@@ -28,7 +32,10 @@ export default function RoomDetails() {
       }
     };
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> bb02258437336a2c00bd596ce5e05b59ad5cbaa9
     fetchRoom();
   }, [id]);
 

@@ -1,38 +1,39 @@
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
+const path = require('path');
+const roomController = require('../controllers/roomController');
+const auth = require('../middleware/auth');
+const role = require('../middleware/role');
 
-// Sample room data for testing
-const sampleRooms = [
-  {
-    _id: '1',
-    title: 'Deluxe Room',
-    roomNumber: '101',
-    type: 'Deluxe',
-    price: 100,
-    status: 'available',
-    image: 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=800&q=80'
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/');
   },
-  {
-    _id: '2',
-    title: 'Standard Room',
-    roomNumber: '102',
-    type: 'Standard',
-    price: 75,
-    status: 'available',
-    image: 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=800&q=80'
-  }
-];
-
-router.get('/', (req, res) => {
-  return res.json(sampleRooms);
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
 });
 
-router.get('/:id', (req, res) => {
-  const room = sampleRooms.find(r => r._id === req.params.id);
-  if (!room) {
-    return res.status(404).json({ message: 'Room not found' });
-  }
-  return res.json(room);
-});
+const upload = multer({ storage });
+
+// Student view: available rooms
+router.get('/', roomController.getAvailableRooms);
+
+// Admin view: all rooms
+router.get('/all', auth, role('admin'), roomController.getRooms);
+
+// Get room by ID
+router.get('/:id', roomController.getRoomById);
+
+// Create room
+router.post('/', auth, role('admin'), upload.array('images', 5), roomController.createRoom);
+
+// Update room
+router.put('/:id', auth, role('admin'), upload.array('images', 5), roomController.updateRoom);
+
+// Delete room
+router.delete('/:id', auth, role('admin'), roomController.deleteRoom);
 
 module.exports = router;

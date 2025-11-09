@@ -7,7 +7,12 @@ export default function RoomsList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+<<<<<<< HEAD
   useEffect(() => {
+=======
+
+    useEffect(() => {
+>>>>>>> bb02258437336a2c00bd596ce5e05b59ad5cbaa9
     const fetchRooms = async () => {
       try {
         console.log('Fetching rooms...');
@@ -22,6 +27,10 @@ export default function RoomsList() {
       }
     };
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> bb02258437336a2c00bd596ce5e05b59ad5cbaa9
     fetchRooms();
   }, []);
 

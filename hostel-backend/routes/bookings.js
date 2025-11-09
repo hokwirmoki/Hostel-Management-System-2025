@@ -1,13 +1,18 @@
 const express = require('express');
 const router = express.Router();
+const bookingController = require('../controllers/bookingController');
+const auth = require('../middleware/auth'); 
 
-// Minimal bookings route stubs
-router.get('/', (req, res) => {
-  return res.json({ bookings: [] });
-});
+// Create a new booking
+router.post('/', auth, bookingController.createBooking);
 
-router.post('/', (req, res) => {
-  return res.json({ message: 'create booking - stub' });
-});
+// Get bookings (User)
+router.get('/my', auth, bookingController.getMyBookings);
+
+// Get all bookings (Admin)
+router.get('/', auth, bookingController.getAllBookings);
+
+// Update booking status (admin only)
+router.put('/:id/status', auth, bookingController.updateBookingStatus);
 
 module.exports = router;
