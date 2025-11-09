@@ -20,7 +20,7 @@ exports.createBooking = async (req, res) => {
 
     const totalPrice = room.pricePerSemester;
 
-    // Auto-calculate checkOut (4 months from checkIn)
+    // Auto-calculate checkOut (4 months from check-In)
     const defaultCheckOut =
       checkOut || new Date(new Date(checkIn).setMonth(new Date(checkIn).getMonth() + 4));
 
