@@ -1,7 +1,9 @@
+// middleware/auth.js
 const jwt = require("jsonwebtoken");
+const User = require("../models/User");
 const SECRET = process.env.JWT_SECRET || "secretkey";
 
-module.exports = function (req, res, next) {
+module.exports = async function (req, res, next) {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -12,7 +14,14 @@ module.exports = function (req, res, next) {
 
   try {
     const decoded = jwt.verify(token, SECRET);
-    req.user = decoded;
+
+    // Fetch full user from DB
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    req.user = user; // Attach full user object
     next();
   } catch (error) {
     return res.status(401).json({ message: "Invalid token" });
