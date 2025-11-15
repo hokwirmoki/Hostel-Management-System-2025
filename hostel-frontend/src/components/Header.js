@@ -10,6 +10,8 @@ export default function Header() {
     logout();
     navigate('/login');
   };
+
+ 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light mb-3">
       <div className="container">
