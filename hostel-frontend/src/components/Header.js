@@ -1,4 +1,3 @@
-
 import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
@@ -11,7 +10,6 @@ export default function Header() {
     logout();
     navigate('/login');
   };
-
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light mb-3">
       <div className="container">
