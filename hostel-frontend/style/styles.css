@@ -9,11 +9,16 @@ body {
     height: 100vh;
 }
 nav {
+    width: 100%;
     display: flex;
+    justify-content: space-between;
     justify-content: center;
     align-items: center;
-    background-color: rgb(3, 155, 3);
+    background-color: #5bc0de;
     padding: 25px 20px;
+    position: sticky; 
+    top: 0;
+    z-index: 1000;
     }
     nav h1 {
             color: white;
@@ -66,47 +71,22 @@ input[type = "text"], input[type = "password"], input[type = "email"] ,input[typ
     border-bottom: 1px solid;
 }
 
-/* Login/auth page background & card styling */
-.auth-page {
-    position: relative;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
-    background-image: url('https://images.unsplash.com/photo-1560448204-e49f6b9c1a77?auto=format&fit=crop&w=1600&q=80');
-    background-size: cover;
-    background-position: center;
+/* Card Image Styling for Hostel Rooms */
+.card-img-top {
+  width: 100%;
+  height: 220px; 
+  object-fit: cover; 
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.auth-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.45));
-    backdrop-filter: blur(2px);
-    z-index: 0;
+.card-img-top:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
 
-.auth-wrapper {
-    position: relative;
-    z-index: 5;
-    width: 100%;
-    max-width: 1100px;
-}
-
-.auth-card {
-    background: rgba(255,255,255,0.92);
-    border-radius: 12px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.25);
-    overflow: hidden;
-    transform: translateY(-8px);
-}
-
-/* subtle accent for headings */
-.auth-card .card-body h2 {
-    color: #0d6efd; /* bootstrap primary */
-}
-
-@media (max-width: 576px) {
-  .auth-card { width: 100%; padding: 12px; }
+.room-card, .booking-card {
+  overflow: hidden;
+  border-radius: 10px;
 }
