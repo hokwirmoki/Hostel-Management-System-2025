@@ -25,11 +25,19 @@ export const AuthProvider = ({ children }) => {
   }, [user]);
 
   const login = async (email, password) => {
-    const res = await api.post('/auth/login', { email, password });
-    setToken(res.data.token);
-    setUser(res.data.user);
-    return res.data;
-  };
+  const res = await api.post('/auth/login', { email, password });
+  
+  // store token in state
+  setToken(res.data.token);
+  setUser(res.data.user);
+
+  // store token and user in localStorage so PrivateRoute can access it
+  localStorage.setItem('token', res.data.token);
+  localStorage.setItem('user', JSON.stringify(res.data.user));
+
+  return res.data;
+};
+
 
   const register = async (payload) => {
     const res = await api.post('/auth/register', payload);
