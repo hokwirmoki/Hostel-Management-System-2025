@@ -1,3 +1,5 @@
+// controllers/bookingController.js
+
 const Booking = require('../models/Booking');
 const Room = require('../models/Room');
 const User = require('../models/User');
@@ -6,7 +8,7 @@ const User = require('../models/User');
 exports.createBooking = async (req, res) => {
   try {
     const { roomId, checkIn, checkOut } = req.body;
-    const userId = req.user.id; 
+    const userId = req.user._id; // Use full user object from auth middleware
 
     if (!roomId || !checkIn) {
       return res.status(400).json({ message: 'Room and check-in date are required' });
@@ -20,7 +22,7 @@ exports.createBooking = async (req, res) => {
 
     const totalPrice = room.pricePerSemester;
 
-    // Auto-calculate checkOut (4 months from check-In)
+    // Auto-calculate checkOut (4 months from checkIn) if not provided
     const defaultCheckOut =
       checkOut || new Date(new Date(checkIn).setMonth(new Date(checkIn).getMonth() + 4));
 
@@ -50,7 +52,7 @@ exports.createBooking = async (req, res) => {
 // GET BOOKINGS FOR LOGGED-IN USER
 exports.getMyBookings = async (req, res) => {
   try {
-    const userId = req.user.id; 
+    const userId = req.user._id;
 
     const bookings = await Booking.find({ user: userId })
       .populate('room', 'title roomNumber pricePerSemester images')
@@ -63,7 +65,7 @@ exports.getMyBookings = async (req, res) => {
   }
 };
 
-// GET ALL BOOKINGS (for admin)
+// GET ALL BOOKINGS (ADMIN ONLY)
 exports.getAllBookings = async (req, res) => {
   try {
     const bookings = await Booking.find()
@@ -78,7 +80,7 @@ exports.getAllBookings = async (req, res) => {
   }
 };
 
-// UPDATE BOOKING STATUS (admin)
+// UPDATE BOOKING STATUS (ADMIN ONLY)
 exports.updateBookingStatus = async (req, res) => {
   try {
     const { id } = req.params;
