@@ -1,11 +1,10 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import { Link } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
 
 export default function RoomsList() {
   const [rooms, setRooms] = useState([]);
-  const { user } = useContext(AuthContext);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     api.get('/rooms')
@@ -13,12 +12,30 @@ export default function RoomsList() {
       .catch(err => console.error(err));
   }, []);
 
+  // Filter rooms based on search term
+  const filteredRooms = rooms.filter(room =>
+    room.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    room.roomNumber.toString().includes(searchTerm)
+  );
+
   return (
     <div className="container">
       <h2>Hostel Rooms</h2>
+
+      {/* Search bar */}
+      <div className="mb-3">
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Search by title or room number..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
       <div className="row">
-        {rooms.length > 0 ? (
-          rooms.map(r => (
+        {filteredRooms.length > 0 ? (
+          filteredRooms.map(r => (
             <div key={r._id} className="col-md-4">
               <div className="card mb-3">
                 {r.images && r.images.length > 0 ? (
@@ -26,14 +43,12 @@ export default function RoomsList() {
                     src={`http://localhost:5000${r.images[0]}`}
                     alt={r.title}
                     className="card-img-top"
-
                   />
                 ) : (
                   <img
                     src="https://via.placeholder.com/600x300?text=Hostel+Room"
                     alt="Default room"
                     className="card-img-top"
-
                   />
                 )}
                 <div className="card-body">

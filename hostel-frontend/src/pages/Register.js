@@ -1,99 +1,35 @@
 import React, { useState, useContext } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
 export default function Register() {
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        password: '',
-        confirmPassword: ''
-    });
+  const [payload, setPayload] = useState({ name: '', email: '', password: '' });
+  const { register } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const [error, setError] = useState(null);
 
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
-    const { register } = useContext(AuthContext);
+  const handleChange = e => setPayload({...payload, [e.target.name]: e.target.value});
 
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
-    };
+  const submit = async (e) => {
+    e.preventDefault();
+    try {
+      await register(payload);
+      navigate('/rooms');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Registration error');
+    }
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-     
-
-    return (
-        <div className="container mt-5">
-            <div className="row justify-content-center">
-                <div className="col-md-6">
-                    <div className="card">
-                        <div className="card-body">
-                            <h2 className="text-center mb-4">Register</h2>
-                            {error && <div className="alert alert-danger">{error}</div>}
-                            <form onSubmit={handleSubmit}>
-                                <div className="mb-3">
-                                    <label htmlFor="name" className="form-label">Name</label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        id="name"
-                                        name="name"
-                                        value={formData.name}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
-                                <div className="mb-3">
-                                    <label htmlFor="email" className="form-label">Email</label>
-                                    <input
-                                        type="email"
-                                        className="form-control"
-                                        id="email"
-                                        name="email"
-                                        value={formData.email}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
-                                <div className="mb-3">
-                                    <label htmlFor="password" className="form-label">Password</label>
-                                    <input
-                                        type="password"
-                                        className="form-control"
-                                        id="password"
-                                        name="password"
-                                        value={formData.password}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
-                                <div className="mb-3">
-                                    <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
-                                    <input
-                                        type="password"
-                                        className="form-control"
-                                        id="confirmPassword"
-                                        name="confirmPassword"
-                                        value={formData.confirmPassword}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
-                                <button type="submit" className="btn btn-primary w-100">
-                                    Register
-                                </button>
-                            </form>
-                            <div className="mt-3 text-center">
-                                Already have an account? <Link to="/login">Login here</Link>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
+  return (
+    <div className="container">
+      <h2>Register</h2>
+      {error && <div className="alert alert-danger">{error}</div>}
+      <form onSubmit={submit} style={{ maxWidth: 500 }}>
+        <input className="form-control mb-2" placeholder="Name" name="name" value={payload.name} onChange={handleChange} required />
+        <input className="form-control mb-2" placeholder="Email" name="email" value={payload.email} onChange={handleChange} required />
+        <input className="form-control mb-2" placeholder="Password" type="password" name="password" value={payload.password} onChange={handleChange} required />
+        <button className="btn btn-primary">Register</button>
+      </form>
+    </div>
+  );
 }
