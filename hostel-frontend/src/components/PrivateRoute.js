@@ -1,28 +1,16 @@
-import React, { useContext } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
+import React from 'react';
+import { Navigate } from 'react-router-dom';
 
 export default function PrivateRoute({ children, role }) {
-    const { token, user } = useContext(AuthContext);
-    const location = useLocation();
+  const user = JSON.parse(localStorage.getItem('user'));
 
-    // Not logged in: redirect to login and preserve the attempted location
-    if (!token) {
-        return <Navigate 
-            to="/login" 
-            replace 
-            state={{ from: location }}
-        />;
-    }
+  if (!user) {
+    return <Navigate to="/login" />;
+  }
 
-    // Logged in but doesn't have required role
-    if (role && user?.role !== role) {
-        return <Navigate 
-            to="/" 
-            replace
-        />;
-    }
+  if (role && user.role !== role) {
+    return <Navigate to="/" />;
+  }
 
-    // Authorized, render children
-    return children;
+  return children;
 }
