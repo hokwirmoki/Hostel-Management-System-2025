@@ -8,14 +8,15 @@ export default function Register() {
   const navigate = useNavigate();
   const [error, setError] = useState(null);
 
-  const handleChange = e =>
-    setPayload({ ...payload, [e.target.name]: e.target.value });
+  const handleChange = e => setPayload({ ...payload, [e.target.name]: e.target.value });
 
   const submit = async (e) => {
     e.preventDefault();
     try {
-      await register(payload); // sets token & user
-      navigate('/rooms');      // redirect after registration
+      const data = await register(payload);
+      if (data.user && data.token) {
+        navigate('/rooms'); // navigate only after successful registration
+      }
     } catch (err) {
       setError(err.response?.data?.message || 'Registration error');
     }
