@@ -31,20 +31,18 @@ export default function RoomDetails() {
     <div className="container mt-4">
       <div className="card shadow-sm">
         {room.images && room.images.length > 0 ? (
-          <img
-src={`${process.env.REACT_APP_API_URL}${img}`}
-  alt={`${room.title}-${idx}`}
-  className="card-img-top"
-/>
-
-        ) : (
-          <img
-            src="https://via.placeholder.com/600x300?text=Hostel+Room"
-            alt="Default room"
-            className="card-img-top"
-
-          />
-        )}
+  <img
+    src={`${process.env.REACT_APP_API_URL}${room.images[0]}`}
+    alt={`${room.title}-0`}
+    className="card-img-top"
+  />
+) : (
+  <img
+    src="https://via.placeholder.com/600x300?text=Hostel+Room"
+    alt="Default room"
+    className="card-img-top"
+  />
+)}
 
         <div className="card-body">
           <h3 className="card-title">{room.title}</h3>
