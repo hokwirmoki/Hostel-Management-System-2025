@@ -12,8 +12,10 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await login(email, password); // sets token & user
-      navigate('/rooms');           // redirect after successful login
+      const data = await login(email, password);
+      if (data.user && data.token) {
+        navigate('/rooms'); // navigate only after successful login
+      }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
     }
