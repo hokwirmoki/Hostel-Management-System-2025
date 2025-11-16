@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
 
   const [token, setToken] = useState(() => localStorage.getItem('token'));
 
-  // Set token and API header whenever token changes
+  // Keep token in axios and localStorage
   useEffect(() => {
     if (token) {
       localStorage.setItem('token', token);
@@ -25,50 +25,42 @@ export const AuthProvider = ({ children }) => {
     }
   }, [token]);
 
-  // Persist user in localStorage
+  // Keep user in localStorage
   useEffect(() => {
     if (user) localStorage.setItem('user', JSON.stringify(user));
     else localStorage.removeItem('user');
   }, [user]);
 
+  // Login function
   const login = async (email, password) => {
     const res = await api.post('/auth/login', { email, password });
-    const token = res.data.token;
-    const user = res.data.user;
-
-    setToken(token);
-    setUser(user);
-
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
-
-    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
-    return res.data;
+    if (res.data.token && res.data.user) {
+      setToken(res.data.token);
+      setUser(res.data.user);
+      localStorage.setItem('token', res.data.token);
+      localStorage.setItem('user', JSON.stringify(res.data.user));
+    }
+    return res.data; // Return for the component to handle navigation
   };
 
+  // Register function
   const register = async (payload) => {
     const res = await api.post('/auth/register', payload);
-    const token = res.data.token;
-    const user = res.data.user;
-
-    setToken(token);
-    setUser(user);
-
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
-
-    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
-    return res.data;
+    if (res.data.token && res.data.user) {
+      setToken(res.data.token);
+      setUser(res.data.user);
+      localStorage.setItem('token', res.data.token);
+      localStorage.setItem('user', JSON.stringify(res.data.user));
+    }
+    return res.data; // Return for the component to handle navigation
   };
 
+  // Logout function
   const logout = () => {
     setUser(null);
     setToken(null);
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    delete api.defaults.headers.common['Authorization'];
   };
 
   return (
