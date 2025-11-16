@@ -52,7 +52,7 @@ export default function Register() {
           onChange={handleChange}
           required
         />
-        <button className="btn btn-primary">Register</button>
+        <button type="submit" className="btn btn-primary">Register</button>
       </form>
     </div>
   );
