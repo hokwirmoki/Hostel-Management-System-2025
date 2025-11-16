@@ -14,7 +14,6 @@ export const AuthProvider = ({ children }) => {
 
   const [token, setToken] = useState(() => localStorage.getItem('token'));
 
-  // Keep token in axios and localStorage
   useEffect(() => {
     if (token) {
       localStorage.setItem('token', token);
@@ -25,37 +24,35 @@ export const AuthProvider = ({ children }) => {
     }
   }, [token]);
 
-  // Keep user in localStorage
   useEffect(() => {
     if (user) localStorage.setItem('user', JSON.stringify(user));
     else localStorage.removeItem('user');
   }, [user]);
 
-  // Login function
+  // LOGIN (FIXED)
   const login = async (email, password) => {
-    const res = await api.post('/auth/login', { email, password });
+    const res = await api.post('/api/auth/login', { email, password });
+
     if (res.data.token && res.data.user) {
       setToken(res.data.token);
       setUser(res.data.user);
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('user', JSON.stringify(res.data.user));
     }
-    return res.data; // Return for the component to handle navigation
+
+    return res.data;
   };
 
-  // Register function
+  // REGISTER (FIXED)
   const register = async (payload) => {
-    const res = await api.post('/auth/register', payload);
+    const res = await api.post('/api/auth/register', payload);
+
     if (res.data.token && res.data.user) {
       setToken(res.data.token);
       setUser(res.data.user);
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('user', JSON.stringify(res.data.user));
     }
-    return res.data; // Return for the component to handle navigation
+
+    return res.data;
   };
 
-  // Logout function
   const logout = () => {
     setUser(null);
     setToken(null);
