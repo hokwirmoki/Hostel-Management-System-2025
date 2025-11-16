@@ -32,8 +32,8 @@ export default function RoomDetails() {
       <div className="card shadow-sm">
         {room.images && room.images.length > 0 ? (
           <img
-  src={`${process.env.REACT_APP_API_URL}${r.images[0]}`}
-  alt={r.title}
+src={`${process.env.REACT_APP_API_URL}${img}`}
+  alt={`${room.title}-${idx}`}
   className="card-img-top"
 />
 
