@@ -32,11 +32,11 @@ export default function RoomDetails() {
       <div className="card shadow-sm">
         {room.images && room.images.length > 0 ? (
           <img
-            src={`http://localhost:5000${room.images[0]}`}
-            alt={room.title}
-            className="card-img-top"
+  src={`${process.env.REACT_APP_API_URL}${r.images[0]}`}
+  alt={r.title}
+  className="card-img-top"
+/>
 
-          />
         ) : (
           <img
             src="https://via.placeholder.com/600x300?text=Hostel+Room"
@@ -62,7 +62,7 @@ export default function RoomDetails() {
               {room.images.slice(1).map((img, idx) => (
                 <img
                   key={idx}
-                  src={`http://localhost:5000${img}`}
+                  src={`${process.env.REACT_APP_API_URL}${img}`}
                   alt={`${room.title}-${idx}`}
                   style={{ width: '120px', height: '80px', objectFit: 'cover', marginRight: '8px', marginBottom: '8px' }}
                 />
